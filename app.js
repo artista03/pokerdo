@@ -179,6 +179,18 @@ function facingBet(hi) {
   const v = parseFloat(m[0].replace(/[RB]/, ''));
   return isFinite(v) ? v : null;
 }
+/* 実際に自分が追加で払う額。
+   🚨 プリフロップのブラインドは既に出している分を差し引く。
+   これを忘れると BB の必要勝率が 14.8% ではなく 24.9% と出て、
+   ちょうど10ポイント厳しく見える（＝降りる方向に誤らせる）。 */
+function callAmount(s) {
+  const bet = facingBet(s.hi);
+  if (!bet) return null;
+  const posted = s.s === 'プリフロップ'
+    ? (s.p === 'BB' ? 1 : s.p === 'SB' ? 0.5 : 0) : 0;
+  const c = bet - posted;
+  return c > 0 ? c : null;
+}
 /* 正解＝GTOが「最善」と付けた手。EV最大では取り違える場面がある
    （例: Q♦8♥ BB プリフロップ は C が EV+0.001 で最大だが頻度2%の「不正確」、
      F が頻度97.9%の「最善」）。ラベルを優先し、無い時だけEV最大に落とす。 */
@@ -198,8 +210,8 @@ function render(s, nTodo, nFresh) {
   const pot = parseFloat(s.pot || 0);
   $('#nPot').textContent = pot ? pot.toFixed(1) : '—';
   $('#nEq').textContent = (s.eq || s.eq === 0) && s.s !== 'プリフロップ' ? (s.eq * 100).toFixed(1) + '%' : '—';
-  const bet = facingBet(s.hi);
-  $('#nReq').textContent = (bet && pot) ? (bet / (pot + bet) * 100).toFixed(1) + '%' : '—';
+  const call = callAmount(s);
+  $('#nReq').textContent = (call && pot) ? (call / (pot + call) * 100).toFixed(1) + '%' : '—';
 
   const en = $('#eqNote');
   if (s.en) { en.textContent = s.en; en.classList.remove('hidden'); } else en.classList.add('hidden');
