@@ -144,6 +144,7 @@ function nextSpot() {
 }
 
 /* ================= 描画 ================= */
+const SEATS = ['UTG+2', 'UTG+1', 'UTG', 'LJ', 'HJ', 'CO', 'BTN', 'SB', 'BB'];
 const SUIT = { s: ['♠', 0], c: ['♣', 0], h: ['♥', 1], d: ['♦', 1] };
 function cardHtml(c) {
   const [sym, red] = SUIT[c[1]] || ['?', 0];
@@ -158,7 +159,6 @@ function boardHtml(b) {
    ヒーローの席のアクションだけ色を付ける。 */
 function histHtml(hi, pos) {
   const segs = String(hi || '').split('｜').map(x => x.trim()).filter(Boolean);
-  const SEATS = ['UTG+2', 'UTG+1', 'UTG', 'LJ', 'HJ', 'CO', 'BTN', 'SB', 'BB'];
   return segs.map((seg, i) => {
     const words = seg.split(/\s+/);
     let head = '';
@@ -180,16 +180,29 @@ function facingBet(hi) {
   return isFinite(v) ? v : null;
 }
 /* 実際に自分が追加で払う額。
-   🚨 プリフロップのブラインドは既に出している分を差し引く。
-   これを忘れると BB の必要勝率が 14.8% ではなく 24.9% と出て、
-   ちょうど10ポイント厳しく見える（＝降りる方向に誤らせる）。 */
+   🚨 ここは2回バグを出している。必ず履歴を歩いて自分の拠出を引くこと。
+      ①ブラインド（BB1bb/SB0.5bb）を引き忘れ → BBの必要勝率が10ポイント高く出た
+      ②自分のオープン額を引き忘れ → 3ベットを受けた側で4ポイント高く出た
+      どちらも「必要勝率を高く見せる＝降りる方向に誤らせる」向きのバグで、
+      今井の最大リーク（F→C）を助長する。 */
 function callAmount(s) {
-  const bet = facingBet(s.hi);
-  if (!bet) return null;
-  const posted = s.s === 'プリフロップ'
-    ? (s.p === 'BB' ? 1 : s.p === 'SB' ? 0.5 : 0) : 0;
-  const c = bet - posted;
-  return c > 0 ? c : null;
+  const segs = String(s.hi || '').split('｜');
+  const seg = segs[segs.length - 1].trim();
+  const pre = segs.length === 1;
+  const put = {};                                  // 席 -> このストリートの拠出
+  let need = 0;                                     // 現在の最大額
+  if (pre) { put.SB = 0.5; put.BB = 1; need = 1; }
+  const t = seg.split(/\s+/);
+  for (let i = 0; i < t.length - 1; i++) {
+    const seat = t[i], act = t[i + 1];
+    if (!SEATS.includes(seat)) continue;
+    const m = act.match(/^[RB]([\d.]+)$/);
+    if (m) { put[seat] = parseFloat(m[1]); need = Math.max(need, put[seat]); i++; }
+    else if (act === 'C') { put[seat] = need; i++; }
+    else if (act === 'F' || act === 'X' || act === 'RAI') { i++; }
+  }
+  const owe = need - (put[s.p] || 0);
+  return owe > 0 ? owe : null;
 }
 /* 正解＝GTOが「最善」と付けた手。EV最大では取り違える場面がある
    （例: Q♦8♥ BB プリフロップ は C が EV+0.001 で最大だが頻度2%の「不正確」、
