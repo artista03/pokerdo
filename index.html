@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0e1116">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>ポーカー道 — 復習</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header id="top">
+  <div class="brand">ポーカー道<span class="sub">復習</span></div>
+  <div class="hstats">
+    <span id="hToday">—</span>
+    <span class="dot">·</span>
+    <span id="hAcc">—</span>
+  </div>
+  <button id="btnQa" class="ico" title="問答">💬<span id="qaBadge" class="badge hidden"></span></button>
+  <button id="btnSet" class="ico" title="設定">⚙</button>
+</header>
+
+<div id="syncbar" class="hidden"></div>
+
+<!-- ===== 出題 ===== -->
+<main id="quiz" class="view">
+  <div class="meta">
+    <span id="mDate"></span>
+    <span id="mPos" class="tag"></span>
+    <span id="mType" class="tag"></span>
+    <span id="mStreet" class="tag hot"></span>
+    <span id="mDepth" class="dim"></span>
+  </div>
+
+  <div class="block">
+    <div class="lbl">あなたの手</div>
+    <div id="hand" class="cards big"></div>
+  </div>
+
+  <div class="block" id="boardBlock">
+    <div class="lbl">ボード</div>
+    <div id="board" class="cards"></div>
+  </div>
+
+  <div class="nums">
+    <div><span class="nlbl">ポット</span><b id="nPot">—</b></div>
+    <div><span class="nlbl">勝率</span><b id="nEq">—</b></div>
+    <div><span class="nlbl">必要勝率</span><b id="nReq">—</b></div>
+  </div>
+  <div id="eqNote" class="note hidden"></div>
+
+  <details class="hist">
+    <summary>アクション履歴</summary>
+    <div id="hist"></div>
+  </details>
+
+  <div class="ask">どうする？</div>
+  <div id="opts" class="opts"></div>
+
+  <div class="pmark" id="pmark"></div>
+</main>
+
+<!-- ===== 結果 ===== -->
+<main id="result" class="view hidden">
+  <div id="verdict" class="verdict"></div>
+  <div id="gto" class="gto"></div>
+  <div id="expl" class="expl"></div>
+
+  <div id="prevqa" class="prevqa hidden"></div>
+
+  <div id="qbox" class="qbox hidden">
+    <div class="ql">腑に落ちないか？</div>
+    <div class="qs">解説を読んでも消えない疑問を、そのまま書け。<br>あとでコーチが答える。空のまま次へ行っても構わない。</div>
+    <div id="qold"></div>
+    <textarea id="qtext" placeholder="例：相手のレンジにKが無いって、なんでそう言い切れる？"></textarea>
+    <button id="qsave" class="btn q">この質問を残して次へ</button>
+  </div>
+
+  <button id="next" class="btn go">次の問題へ</button>
+</main>
+
+<!-- ===== 問答 ===== -->
+<main id="qa" class="view hidden">
+  <h2 class="vh">問答</h2>
+  <div id="qabody"></div>
+  <button id="qaBack" class="btn go">稽古に戻る</button>
+</main>
+
+<!-- ===== 設定 ===== -->
+<main id="setv" class="view hidden">
+  <h2 class="vh">設定</h2>
+
+  <div class="card">
+    <div class="ct">GitHub同期</div>
+    <div class="cs">質問と成績をリポジトリに書き戻す。コーチがここから読む。</div>
+    <input id="tok" type="password" placeholder="ghp_… トークンを貼る" autocomplete="off">
+    <div class="row">
+      <button id="tokSave" class="btn">保存</button>
+      <button id="syncNow" class="btn ghost">今すぐ同期</button>
+    </div>
+    <div id="tokState" class="cs"></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">成績</div>
+    <div id="statBody" class="statbody"></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">危険な操作</div>
+    <div class="cs">この端末の成績と質問を消す。GitHubに同期済みのぶんは消えない。</div>
+    <button id="reset" class="btn danger">この端末のデータを消す</button>
+  </div>
+
+  <button id="setBack" class="btn go">稽古に戻る</button>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
