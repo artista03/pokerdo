@@ -328,42 +328,20 @@ function paintQaBadge() {
   const b = $('#qaBadge');
   b.textContent = n; b.classList.toggle('hidden', !n);
 }
-/* 文字列("Jc7h")でも配列(["Jc","7h"])でも受けてカードの絵にする。
-   一覧は文字だけだと局面が思い出せない＝柄で殴られると一瞬で戻ってくる。 */
-const toCards = v => Array.isArray(v) ? v : (String(v || '').match(/../g) || []);
-const miniCards = v => `<span class="mcards">${toCards(v).map(cardHtml).join('')}</span>`;
-
 function paintQa() {
   const body = $('#qabody');
-  const qs = st.questions.slice();
-  if (!qs.length) { body.innerHTML = '<p class="dim">まだ質問は無い。間違えた時に書けば、ここに溜まる。</p>'; return; }
-  const na = qs.filter(q => !ANSWERS[q.id]).length;
-  /* 未回答を上に、その中では新しい順。答えを待っているものが埋もれないように。 */
-  qs.sort((a, b) => (!!ANSWERS[a.id] - !!ANSWERS[b.id]) || b.at - a.at);
-
-  body.innerHTML = `<div class="qasum">全${qs.length}件　回答済 ${qs.length - na}　<b>回答待ち ${na}</b></div>`
-    + qs.map(q => {
-      const a = ANSWERS[q.id], s = BYKEY[q.key] || {};
-      const hand = toCards(s.h && s.h.length ? s.h : q.hand);
-      const board = toCards(s.b && s.b.length ? s.b : q.board);
-      const d = new Date(q.at);
-      const tags = [s.p || q.pos, s.t || q.potType, s.s || q.street]
-        .filter(Boolean).map(x => `<span class="tag">${esc(x)}</span>`).join('');
-      const pick = q.pick ? `<div class="qapick">あなた <b class="ng">${esc(q.pick)}</b>`
-        + (q.best ? ` → GTO <b class="ok">${esc(q.best)}</b>` : '') + '</div>' : '';
-      return `<div class="qacard ${a ? 'answered' : 'waiting'}">
-      <div class="qah">
-        ${miniCards(hand)}
-        ${board.length ? `<span class="qavs">板</span>${miniCards(board)}` : ''}
-        <span class="qadate">${d.getMonth() + 1}/${d.getDate()}</span>
-      </div>
-      <div class="qatags">${tags}</div>
-      ${pick}
+  if (!st.questions.length) { body.innerHTML = '<p class="dim">まだ質問は無い。間違えた時に書けば、ここに溜まる。</p>'; return; }
+  body.innerHTML = st.questions.slice().sort((a, b) => b.at - a.at).map(q => {
+    const a = ANSWERS[q.id], s = BYKEY[q.key] || {};
+    return `<div class="qacard ${a ? 'answered' : 'waiting'}">
+      <div class="qaw">${new Date(q.at).toLocaleDateString('ja-JP')} ·
+        ${esc((s.h || []).join(' '))} ${esc(s.p || '')} ${esc(s.t || '')} ${esc(s.s || '')}
+        ${s.b && s.b.length ? '· 板 ' + esc(s.b.join(' ')) : ''}
+        · ${a ? 'コーチの回答' : '回答待ち'}</div>
       <div class="qaq">Q: ${esc(q.q)}</div>
-      ${a ? `<details class="qadet"><summary>コーチの回答を読む</summary><div class="qaa">${md(a.a)}</div></details>`
-          : '<div class="qawait">— 回答待ち</div>'}
+      ${a ? `<div class="qaa">${md(a.a)}</div>` : ''}
     </div>`;
-    }).join('');
+  }).join('');
 }
 function paintStats() {
   const all = st.results, ac = all.filter(x => x.correct).length;

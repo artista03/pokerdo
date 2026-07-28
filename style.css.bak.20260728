@@ -172,31 +172,6 @@ body{
 .qacard.waiting{border-left:3px solid var(--ng)}
 .qacard .qaw{font-size:11px;color:var(--dim);margin-bottom:6px}
 .qacard .qaq{color:var(--hot);font-weight:700;margin-bottom:8px;white-space:pre-wrap}
-
-/* ---------- 問答の一覧（柄付きで局面を思い出す） ---------- */
-.qasum{font-size:12px;color:var(--dim);text-align:center;margin-bottom:10px}
-.qasum b{color:var(--ng)}
-.qah{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:7px}
-.mcards{display:inline-flex;gap:3px}
-.mcards .pc{
-  width:26px;height:35px;border-radius:5px;box-shadow:0 1px 3px rgba(0,0,0,.4);
-}
-.mcards .pc .r{font-size:13px}
-.mcards .pc .s{font-size:10px;margin-top:1px}
-.qavs{font-size:11px;color:var(--dim);margin:0 1px}
-.qadate{margin-left:auto;font-size:11px;color:var(--dim);font-variant-numeric:tabular-nums}
-.qatags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px}
-.qapick{font-size:12px;color:var(--dim);margin-bottom:7px}
-.qapick b{font-variant-numeric:tabular-nums}
-.qapick .ng{color:var(--ng)} .qapick .ok{color:var(--ok)}
-.qawait{font-size:12px;color:var(--ng)}
-.qadet summary{
-  cursor:pointer;font-size:12px;color:var(--blue);
-  padding:5px 0;list-style:none;user-select:none;
-}
-.qadet summary::-webkit-details-marker{display:none}
-.qadet summary::before{content:"▸ ";}
-.qadet[open] summary::before{content:"▾ ";}
 .qacard .qaa{white-space:normal}
 .qacard .qaa pre{
   background:#0b0e13;border:1px solid var(--line);border-radius:8px;
