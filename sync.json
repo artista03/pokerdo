@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-07-29T02:43:16.798Z",
+ "updatedAt": "2026-07-29T02:44:17.048Z",
  "questions": [
   {
    "id": "q1785111543443_0f13j",
@@ -345,6 +345,21 @@
    "potType": "Squeeze",
    "date": "2026/7/14",
    "eq": 0
+  },
+  {
+   "id": "q1785293057046_h8ff8",
+   "at": 1785293057046,
+   "q": "ここcheckでいいのかぁ　BTNがcheck二回だからろーこねっていうを思い出し　AKあるいはTずらをしてしまいました\nだめなんだな",
+   "key": "31c58836-2cb0-441b-b0e3-7e3b3f95018f",
+   "pick": "R1.7",
+   "best": "X",
+   "hand": "3s3h",
+   "board": "Ts9h5sAhKd",
+   "pos": "BB",
+   "street": "リバー",
+   "potType": "SRP",
+   "date": "2026/7/12",
+   "eq": 0.161
   }
  ],
  "results": [
